@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Curricular Odontología</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #ffe6f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d63384;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 16px;
+      padding: 10px 0;
+    }
+
+    .semester {
+      background: #fff0f5;
+      padding: 10px;
+      border-radius: 10px;
+      min-width: 250px;
+      box-shadow: 0 0 10px #ffc0cb88;
+      border: 2px solid #ffb6c1;
+    }
+
+    .semester h2 {
+      font-size: 18px;
+      color: #c2185b;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .course {
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 8px;
+      background: #ffeef5;
+      cursor: pointer;
+      position: relative;
+      transition: 0.2s;
+      border: 1px solid #f8bbd0;
+    }
+
+    .course:hover {
+      background: #ffd9ec;
+    }
+
+    .course.approved {
+      background: #d1ffd6 !important;
+      border-color: #8bc34a;
+      text-decoration: line-through;
+      color: #666;
+    }
+
+    .course.locked {
+      background: #f0f0f0;
+      border-color: #ccc;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .course.locked:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #333;
+      color: #fff;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 5px;
+      white-space: pre-line;
+      z-index: 999;
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular - Odontología</h1>
+  <div class="grid" id="malla"></div>
+
+  <script>
+    const data = {
+      "I Semestre": [
+        "Actividades físico-culturales",
+        "Lenguaje y comunicación",
+        "Química",
+        "Biología",
+        "Matemática",
+        "Ingles I",
+        "Introducción a la vida universitaria y métodos de estudio",
+        "Ciudadanía intercultural"
+      ],
+      "II Semestre": [
+        ["Ingles II", ["Ingles I"]],
+        ["Histología y embriología general y aplicada", ["Biología"]],
+        ["Bioquímica", ["Química"]],
+        ["Anatomía humana", ["Biología"]],
+        "Biofísica",
+        ["Filosofía", ["Introducción a la vida universitaria y métodos de estudio"]],
+        ["Ecología", ["Ecología"]]
+      ],
+      "III Semestre": [
+        ["Microbiología e inmunología", ["Histología y embriología general y aplicada", "Bioquímica"]],
+        ["Anatomía de cabeza y cuello y aplicada", ["Anatomía humana"]],
+        ["Fisiología general y aplicada", ["Anatomía humana", "Biofísica"]],
+        ["Salud y estomatología preventiva I", ["Ecológica"]],
+        ["Materiales odontológicos", ["Bioquímica", "Biofísica"]],
+        ["Patología general y bucal", ["Histología y embriología general y aplicada"]]
+      ],
+      "IV Semestre": [
+        ["Medicina estomatología I", ["Patología general y bucal"]],
+        ["Salud y estomatología preventiva II", ["Salud y estomatología preventiva I"]],
+        ["Oclusión y anatomía dentaria", ["Anatomía de cabeza y cuello y aplicada", "Fisiología general y aplicada"]],
+        ["Radiología e imagenología", ["Anatomía de cabeza y cuello y aplicada"]],
+        ["Periodoncia I", ["Microbiología e inmunología"]],
+        ["Farmacología general y terapéutica", ["Microbiología e inmunología"]]
+      ],
+      "V Semestre": [
+        ["Carielogia y operatoria dental", ["Materiales odontológicos", "Oclusión y anatomía dentaria", "Radiología e imagenología"]],
+        ["Cirugía bucal y maxilofacial I", ["Radiología e imagenología", "Farmacología general y terapéutica"]],
+        ["Periodoncia II", ["Periodoncia I"]],
+        ["Medicina estomatológica II", ["Medicina estomatología I"]],
+        ["Psicología", ["Filosofía"]],
+        ["Ética", ["Filosofía"]],
+        "Electiva"
+      ],
+      "VI Semestre": [
+        ["Cirugía bucal y maxilofacial II", ["Cirugía bucal y maxilofacial I"]],
+        ["Endodoncia", ["Carielogia y operatoria dental"]],
+        ["Odontopediatría I", ["Salud y estomatología preventiva II", "Psicología"]],
+        ["Prótesis fija", ["Carielogia y operatoria dental", "Periodoncia II"]],
+        ["Prótesis removible", ["Carielogia y operatoria dental", "Periodoncia II"]],
+        ["Metodología de la investigación", ["Ética"]]
+      ],
+      "VII Semestre": [
+        ["Clínica estomatológica integral I", ["Cirugía bucal y maxilofacial II", "Endodoncia", "Odontopediatría I", "Prótesis fija"]],
+        ["Elaboración de proyectos de investigación científica en odontología", ["Metodología de la investigación"]],
+        ["Odontopediatría II", ["Odontopediatría I"]],
+        ["Estomatología legal y forense", ["Ética", "Cirugía bucal y maxilofacial II"]],
+        ["Prótesis completa", ["Prótesis removible"]]
+      ],
+      "VIII Semestre": [
+        ["Clínica estomatológica integral II", ["Prótesis removible", "Clínica estomatológica integral I", "Odontopediatría II"]],
+        ["Bioestadística", ["Elaboración de proyectos de investigación científica en odontología"]],
+        ["Ortodoncia", ["Cirugía bucal y maxilofacial II", "Odontopediatría II"]],
+        ["Administración en odontología", ["Matemática"]]
+      ],
+      "IX Semestre": [
+        ["Internado estomatológico", ["Prótesis completa", "Clínica estomatológica integral II", "Ortodoncia", "Administración en odontología"]],
+        ["Seminario de investigación", ["Bioestadística"]],
+        ["Odontología en pacientes especiales", ["Prótesis completa", "Clínica estomatológica integral II", "Ortodoncia", "Administración en odontología"]]
+      ],
+      "X Semestre": [
+        ["Internado hospitalario", ["Internado estomatológico", "Odontología en pacientes especiales"]],
+        ["Trabajo de investigación", ["Seminario de investigación"]]
+      ]
+    };
+
+    const malla = document.getElementById("malla");
+    const approved = JSON.parse(localStorage.getItem("aprobados") || "[]");
+
+    function save() {
+      localStorage.setItem("aprobados", JSON.stringify(approved));
+    }
+
+    function render() {
+      malla.innerHTML = "";
+      const allCourses = {};
+
+      // Primer recorrido: construir cursos con sus requisitos
+      for (const [semestre, cursos] of Object.entries(data)) {
+        const column = document.createElement("div");
+        column.className = "semester";
+        const title = document.createElement("h2");
+        title.textContent = semestre;
+        column.appendChild(title);
+
+        cursos.forEach(c => {
+          const nombre = typeof c === "string" ? c : c[0];
+          const reqs = typeof c === "string" ? [] : c[1];
+          allCourses[nombre] = { nombre, reqs };
+          const courseEl = document.createElement("div");
+          courseEl.className = "course";
+          courseEl.textContent = nombre;
+
+          if (approved.includes(nombre)) {
+            courseEl.classList.add("approved");
+          } else if (!reqs.every(r => approved.includes(r))) {
+            courseEl.classList.add("locked");
+            courseEl.dataset.tooltip = "Requiere:\n" + reqs.filter(r => !approved.includes(r)).join("\n");
+          }
+
+          courseEl.onclick = () => {
+            if (courseEl.classList.contains("locked")) return;
+            if (courseEl.classList.contains("approved")) {
+              approved.splice(approved.indexOf(nombre), 1);
+            } else {
+              approved.push(nombre);
+            }
+            save();
+            render();
+          };
+
+          column.appendChild(courseEl);
+        });
+
+        malla.appendChild(column);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
